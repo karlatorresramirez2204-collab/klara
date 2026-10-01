@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝐊𝐥𝐚𝐫𝐚 💎 — Tu Voz Clara</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        :root {
+            --k: #7C3AED;
+            --lila: #EDE9FE;
+            --dorado: #F59E0B;
+            --verde: #10B981;
+            --rojo: #EF4444;
+            --texto: #1F2937;
+            --gris: #6B7280;
+        }
+        body {
+            background: white;
+            color: var(--texto);
+            padding: 1rem;
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        .header { text-align: center; padding: 1.5rem 1rem; }
+        .logo { font-size: 2.2rem; font-weight: 800; color: var(--k); letter-spacing: 2px; }
+        .subtitulo { color: var(--gris); margin-top: 0.3rem; }
+        .barra-progreso { height: 10px; background: #E5E7EB; border-radius: 5px; margin-top: 1rem; overflow: hidden; }
+        .relleno { height: 100%; background: linear-gradient(90deg, var(--k), #A78BFA); width: 3.5%; transition: width 0.5s ease; border-radius: 5px; }
+        .tarjeta { border-radius: 20px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 12px rgba(124, 58, 237, 0.08); }
+        .respiracion { background: var(--lila); }
+        .calentamiento { background: #FEF3C7; }
+        .ejercicio { background: #ECFDF5; }
+        h3 { margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+        p { line-height: 1.6; margin-bottom: 0.5rem; }
+        .subtit-ejercicio { font-weight: 600; margin-bottom: 0.5rem; color: var(--k); }
+        .duracion { font-size: 0.9rem; color: var(--gris); margin-bottom: 1rem; }
+        .grabadora { background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%); color: white; border-radius: 20px; padding: 2rem; text-align: center; margin: 1.5rem 0; }
+        .btn { width: 100%; padding: 1rem; border: none; border-radius: 14px; font-size: 1rem; font-weight: 600; cursor: pointer; margin: 0.5rem 0; transition: transform 0.2s, opacity 0.2s; }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-primario { background: var(--k); color: white; }
+        .btn-blanco { background: white; color: var(--k); }
+        .btn-peligro { background: #FEE2E2; color: var(--rojo); display: none; }
+        .btn-siguiente { background: var(--verde); color: white; display: none; margin-top: 1rem; }
+        .btn-oculto { display: none !important; }
+        .respuesta { margin-top: 1.5rem; display: none; }
+        .caja { border-radius: 14px; padding: 1rem; margin: 0.8rem 0; }
+        .bien { background: #ECFDF5; border-left: 4px solid var(--verde); }
+        .mejora { background: #FFFBEB; border-left: 4px solid var(--dorado); }
+        .paso { background: var(--lila); border-left: 4px solid var(--k); }
+        .cargando { display: none; text-align: center; padding: 1rem; color: white; }
+        .puntos { display: inline-block; animation: puntos 1.4s infinite; }
+        @keyframes puntos { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        .reproduccion { margin-top: 1rem; display: none; }
+        .audio-player { width: 100%; margin-top: 0.5rem; }
+        .reiniciar { margin-top: 2rem; text-align: center; }
+        .btn-reiniciar { background: transparent; color: var(--gris); border: none; font-size: 0.85rem; text-decoration: underline; cursor: pointer; padding: 0.5rem; }
+        .oculto { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">𝐊𝐥𝐚𝐫𝐚 💎</div>
+        <p class="subtitulo">Tu Voz Clara — Día <span id="numero-dia">1</span> de 28</p>
+        <div class="barra-progreso"><div class="relleno" id="barra"></div></div>
+    </div>
+
+    <div class="tarjeta respiracion" id="paso-1">
+        <h3>🧘 Respiración — 1 minuto</h3>
+        <p>Inhala contando <strong>4</strong> → Retén <strong>4</strong> → Suelta <strong>6</strong></p>
+        <p>Repite 5 veces, despacio y tranquila 💜</p>
+        <button class="btn btn-primario" onclick="siguientePaso(2)">Listo ✅ →</button>
+    </div>
+
+    <div class="tarjeta calentamiento oculto" id="paso-2">
+        <h3>🗣️ Calentamiento — 2 minutos</h3>
+        <p>1️⃣ Di las vocales A-E-I-O-U abriendo bien la boca × 5 veces</p>
+        <p>2️⃣ Repite 3 veces:</p>
+        <p><em>"Pablito clavó un clavito en la calva de un calvito"</em></p>
+        <button class="btn btn-primario" onclick="siguientePaso(3)">Listo ✅ →</button>
+    </div>
+
+    <div class="tarjeta ejercicio oculto" id="paso-3">
+        <h3>🎯 Ejercicio — <span id="duracion">6</span> minutos</h3>
+        <p class="subtit-ejercicio" id="titulo-ejercicio"></p>
+        <p id="instruccion-ejercicio"></p>
+    </div>
+
+    <div class="grabadora oculto" id="zona-grabar">
+        <h3>🎙️ Graba tu voz</h3>
+        <p style="opacity: 0.9; margin: 0.5rem 0;">Hazlo natural, tal cual eres 💛</p>
+        <button class="btn btn-blanco" id="boton-grabar" onclick="iniciarGrabacion()">▶️ Grabar</button>
+        <button class="btn btn-peligro" id="boton-detener" onclick="detenerGrabacion()">⏹ Detener</button>
+        <div class="cargando" id="cargando">Analizando tu voz<span class="puntos">...</span></div>
+        <div class="reproduccion" id="zona-reproducir">
+            <p>✅ Grabación lista. Escúchate:</p>
+            <audio id="reproductor" class="audio-player" controls></audio>
+        </div>
+    </div>
+
+    <div class="respuesta" id="respuesta">
+        <h3>💬 Klara dice:</h3>
+        <div class="caja bien"><strong>🟢 Excelente</strong><p id="texto-bien"></p></div>
+        <div class="caja mejora"><strong>🟡 A mejorar</strong><p id="texto-mejora"></p></div>
+        <div class="caja paso"><strong>✨ Siguiente paso</strong><p id="texto-paso"></p></div>
+        <button class="btn btn-siguiente" id="boton-siguiente-dia" onclick="siguienteDia()">➡️ Día Siguiente</button>
+    </div>
+
+    <div class="reiniciar">
+        <button class="btn-reiniciar" onclick="reiniciarTodo()">Reiniciar entrenamiento</button>
+    </div>
+
+<script>
+// ==================================================
+// PLAN DE 28 DÍAS
+// ==================================================
+const plan = [
+  { dia: 1, titulo: "Preséntate en 30 segundos", instruccion: "Di tu nombre, quién eres, qué haces y qué valor das a las personas. Sin apurarte, natural, tal cual eres.", duracion: 6 },
+  { dia: 2, titulo: "Lectura pronunciada frase por frase", instruccion: "Di lento y claro: 'Soy Karla Torres, médico general. Me dedico a la computación y valoro a las personas desde el primer momento.' Repite 3 veces, cada una más segura.", duracion: 6 },
+  { dia: 3, titulo: "Cuenta tu mañana en 3 frases", instruccion: "Di solo: Inicio → Medio → Fin. Sin agregar nada de más. Practica decirlo concisa y completa.", duracion: 6 },
+  { dia: 4, titulo: "Habla sin muletillas", instruccion: "Habla 1 minuto sobre algo que te guste. Sin decir 'ehh', 'o sea', 'creo'. Usa pausas en su lugar. El silencio también comunica.", duracion: 6 },
+  { dia: 5, titulo: "Explica sencillo", instruccion: "Explica qué es la respiración profunda como si se lo explicaras a una niña pequeña. Palabras claras, cortas, directas.", duracion: 6 },
+  { dia: 6, titulo: "Resume en 3 oraciones", instruccion: "Toma esta idea y dilo en solo 3 frases: 'La confianza no es saberlo todo, es estar dispuesta a aprender. Se construye paso a paso. Y se nota en la voz.'", duracion: 6 },
+  { dia: 7, titulo: "Repasa tu presentación", instruccion: "Di tu presentación del Día 1 tres veces seguidas. Cada vez más despacio y con más seguridad. Compara cómo suenas hoy vs el primer día.", duracion: 6 },
+  { dia: 8, titulo: "Modula: sube y baja el tono", instruccion: "Di: 'Estoy aquí' — la primera plana, la segunda más grave, la tercera más brillante. Varía tu tono para dar vida a lo que dices.", duracion: 6 },
+  { dia: 9, titulo: "Énfasis en la palabra clave", instruccion: "Di: 'Yo valoro a las personas'. Repite 3 veces resaltando una palabra distinta cada vez: 'YO valoro...' / 'Yo VALORO...' / 'Yo valoro a las PERSONAS'. Siente el cambio.", duracion: 6 },
+  { dia: 10, titulo: "Presentación con énfasis", instruccion: "Repite tu presentación poniendo fuerza en lo más importante: tu nombre, tu dedicación, tu valor. No grites, solo da peso a cada palabra clave.", duracion: 6 },
+  { dia: 11, titulo: "Pausa antes y después", instruccion: "Di: 'Lo que aporto… es mi tiempo, mi escucha y mi respeto.' Haz una pausa corta donde están los puntos suspensivos. Deja que las palabras respiren.", duracion: 6 },
+  { dia: 12, titulo: "Graba y compara", instruccion: "Di una frase con énfasis. Escúchate. Vuelve a grabarla mejorando el tono. Hazlo 3 veces hasta que sientas que suena firme.", duracion: 6 },
+  { dia: 13, titulo: "Cuenta una cualidad con seguridad", instruccion: "Di: 'Soy buena viendo soluciones que otros no ven'. Di lo sin dudar, sin bajar la voz, sin apurarte. Afírmalo como la verdad que es.", duracion: 6 },
+  { dia: 14, titulo: "Repaso de modulación", instruccion: "Di tu presentación completa variando el tono: sube al presentar, baja al dar valor, firme al cerrar. Tu voz tiene matices únicos, úsalos.", duracion: 6 },
+  { dia: 15, titulo: "Velocidad natural, no rápida", instruccion: "Di tu presentación despacio: 3 segundos por frase. No te apresures. Hablar despacio demuestra seguridad y te hace escuchar mejor.", duracion: 6 },
+  { dia: 16, titulo: "Pausa para pensar y respirar", instruccion: "Di: 'Soy Karla. Soy médico. Tengo habilidades. Valoro a las personas.' Haz una pausa de 1 segundo entre cada oración. Respira y avanza.", duracion: 6 },
+  { dia: 17, titulo: "Velocidad distinta según lo que dices", instruccion: "Presentación: inicio despacio, medio fluido, cierre firme. No todo a la misma velocidad. Adapta el ritmo a lo que sientes.", duracion: 6 },
+  { dia: 18, titulo: "Sin prisas, sin cortar palabras", instruccion: "Di 3 frases completas pronunciando cada sílaba: 'Mi voz merece ser escuchada. Tengo algo valioso que dar. Voy paso a paso y lo logro.'", duracion: 6 },
+  { dia: 19, titulo: "Pausa = poder", instruccion: "Antes de decir lo más importante, haz una pausa. Ejemplo: 'Lo que más me distingue… es que valoro a cada persona desde el primer momento.'", duracion: 6 },
+  { dia: 20, titulo: "Cuenta una anécdota corta", instruccion: "Algo breve: un momento bonito de tu día. Inicio, pausa, detalle, cierre. Ritmo tranquilo, sin perderte.", duracion: 6 },
+  { dia: 21, titulo: "Control de velocidad y respiración", instruccion: "Repite tu presentación completa controlando el aire: respira al terminar la frase, no en medio. Mantén ritmo estable y pausas donde corresponde.", duracion: 6 },
+  { dia: 22, titulo: "Di con gratitud", instruccion: "Di: 'Estoy agradecida por quien soy, por lo que aprendo y por las personas que conozco.' Siente cada palabra al decirla. No solo la boca, también el corazón.", duracion: 6 },
+  { dia: 23, titulo: "Di con confianza", instruccion: "Di: 'Tengo conocimientos que aportar y un camino que construir.' Dilo mirándote al espejo o a tu cámara. Convicción, firmeza, serenidad.", duracion: 6 },
+  { dia: 24, titulo: "Expresa un deseo", instruccion: "Di: 'Deseo crecer, aprender y compartir lo mejor de mí cada día.' Con esperanza y fuerza. Tu voz transmite lo que sientes por dentro.", duracion: 6 },
+  { dia: 25, titulo: "Persuade: di por qué importas", instruccion: "Di: 'Cuando me escuchan, reciben atención sincera, respeto y valor real. Eso es lo que ofrezco.' Hazlo sentir importante.", duracion: 6 },
+  { dia: 26, titulo: "Tu historia breve", instruccion: "En 4 frases: Quién eres → Qué has aprendido → Qué te mueve → Qué das. Con emoción natural, sin exagerar. Tú siendo tú.", duracion: 6 },
+  { dia: 27, titulo: "Presentación completa con emoción", instruccion: "Tu presentación definitiva: nombre, trayectoria, fortaleza, valor. Todo junto, firme, cálida, tuya. Como si te presentaras ante el mundo.", duracion: 6 },
+  { dia: 28, titulo: "¡Día 28 — Tu voz transformada!", instruccion: "Di tu presentación final. Grábala. Escúchala. Compara con el Día 1. Celebra lo que lograste: tu voz, clara, segura, brillando tal cual eres. 💎✨", duracion: 8 }
+];
+
+// ==================================================
+// RETROALIMENTACIONES SIMULADAS
+// ==================================================
+const retroalimentaciones = [
+  { bien: "Tu voz suena clara y firme desde la primera palabra. Se entiende todo perfectamente y transmites confianza natural.", mejora: "Puedes hablar un poquito más despacio para que cada palabra tenga su peso. No hay prisa, tienes todo el tiempo.", paso: "Repite la frase respirando hondo antes de empezar. Notarás cómo fluye con más calma y fuerza." },
+  { bien: "Excelente pronunciación, cada sílaba se escucha completa y nítida. Eso demuestra presencia y seguridad.", mejora: "Intenta abrir un poquito más la boca al pronunciar. Tu voz tiene más espacio y suena más redonda y cálida.", paso: "Di la frase mirándote al espejo y sonriendo ligeramente. Tu tono se vuelve más amable y cercano." },
+  { bien: "Se nota que te crees lo que dices y eso se transmite enseguida. Tu tono es cálido y firme a la vez, una combinación hermosa.", mejora: "Respira antes de las frases largas. Una pausa corta da más fuerza a lo que viene después y te da calma.", paso: "Marca con una pausa donde termina cada idea. Tu voz tendrá más ritmo y se escuchará más ordenada." },
+  { bien: "Sin muletillas, sin dudas, sin cortes. Suena natural, directo y convincente. Estás encontrando tu tono real.", mejora: "Puedes poner un poquito más de énfasis en las palabras importantes: tu nombre, tu valor, tus fortalezas.", paso: "Subraya con la voz la palabra clave de cada frase. Verás cómo cobra más sentido y fuerza." },
+  { bien: "Hablas despacio y con control. Eso es lo que más cuesta lograr y ya lo estás haciendo. Impone respeto y calma.", mejora: "Baja un poquito la velocidad en la última parte de cada frase. Ayuda a que la idea se quede bien clara en quien te escucha.", paso: "Termina cada frase con la misma fuerza con la que empezaste. No bajes el tono al final, manténlo firme." },
+  { bien: "Tu voz tiene matices, no suena plana ni monótona. Eso hace que quien te escucha se interese y se conecte contigo.", mejora: "Confía en las pausas: el silencio breve no es vacío, es parte de lo que comunicas. No las llenes con sonidos.", paso: "Ensaya la frase dejando un segundo de silencio antes y después de la idea principal. Verás cómo resalta más." },
+  { bien: "Te expresas con dignidad y calidez al mismo tiempo. Esa combinación te hace única y nadie más la tiene.", mejora: "Evita empezar frases con 'creo', 'quizás', 'solo'. Di lo que sabes como lo que es: una verdad tuya.", paso: "Cada vez que digas algo de ti, conviértelo en afirmación: 'Soy', 'Tengo', 'Puedo'. Dilo con seguridad." },
+  { bien: "Se siente sinceridad en tu voz. Eso es lo más valioso que puedes ofrecer: ser tú misma sin filtros ni máscaras.", mejora: "Mantén el volumen parejo de principio a fin. No hace falta gritar, pero sí mantenerte presente.", paso: "Imagina que le hablas a una persona que está un poco lejos, pero sin gritar. Así tu voz llega con más fuerza." },
+  { bien: "Estás conectando con lo que dices y se nota. No es solo técnica, es corazón poniéndose en palabras.", mejora: "Respira por la nariz antes de hablar. El aire da sostén a la voz y la hace sonar más estable y tranquila.", paso: "Toma aire, suelta despacio, y empieza. Tres pasos que cambian todo el tono de la frase." },
+  { bien: "Claridad, ritmo, calidez y firmeza. Estás logrando justo lo que buscabas: tu voz, tal cual eres, lista para brillar.", mejora: "No hay mucho que ajustar ahora. Solo confía en ti: lo que dices vale, merece ser escuchado y tú mereces decirlo.", paso: "Di la frase una vez más para ti misma, con ojos cerrados. Si te convence a ti, convencerá a todos los demás." }
+];
+
+// ==================================================
+// ESTADO Y VARIABLES
+// ==================================================
+let diaActual = parseInt(localStorage.getItem('klaria_dia') || 1);
+let pasoActual = 1;
+let grabando = false;
+let mediaRecorder = null;
+let audioChunks = [];
+let stream = null;
+
+// ==================================================
+// INICIO
+// ==================================================
+document.addEventListener('DOMContentLoaded', iniciar);
+
+function iniciar() {
+    cargarDia(diaActual);
+}
+
+function cargarDia(numero) {
+    diaActual = numero;
+    localStorage.setItem('klaria_dia', diaActual);
+    const datos = plan.find(p => p.dia === diaActual);
+    document.getElementById('numero-dia').textContent = diaActual;
+    document.getElementById('titulo-ejercicio').textContent = datos.titulo;
+    document.getElementById('instruccion-ejercicio').textContent = datos.instruccion;
+    document.getElementById('duracion').textContent = datos.duracion;
+    const porcentaje = (diaActual / 28) * 100;
+    document.getElementById('barra').style.width = porcentaje + '%';
+    pasoActual = 1;
+    document.getElementById('paso-1').classList.remove('oculto');
+    document.getElementById('paso-2').classList.add('oculto');
+    document.getElementById('paso-3').classList.add('oculto');
+    document.getElementById('zona-grabar').classList.add('oculto');
+    document.getElementById('respuesta').style.display = 'none';
+    grabando = false;
+    mediaRecorder = null;
+    audioChunks = [];
+    document.getElementById('boton-grabar').style.display = 'block';
+    document.getElementById('boton-detener').style.display = 'none';
+    document.getElementById('zona-reproducir').style.display = 'none';
+    document.getElementById('cargando').style.display = 'none';
+    document.getElementById('boton-siguiente-dia').style.display = 'none';
+    document.getElementById('boton-siguiente-dia').disabled = false;
+    document.getElementById('boton-siguiente-dia').innerText = '➡️ Día Siguiente';
+}
+
+// ==================================================
+// NAVEGACIÓN DE PASOS
+// ==================================================
+function siguientePaso(paso) {
+    document.getElementById(`paso-${pasoActual}`).classList.add('oculto');
+    pasoActual = paso;
+    if (paso === 2) {
+        document.getElementById('paso-2').classList.remove('oculto');
+    } else if (paso === 3) {
+        document.getElementById('paso-3').classList.remove('oculto');
+        document.getElementById('zona-grabar').classList.remove('oculto');
+    }
+}
+
+// ==================================================
+// GRABACIÓN (COMPATIBLE CON ANDROID E IPHONE)
+// ==================================================
+function getSupportedMimeType() {
+    const types = [
+        'audio/webm;codecs=opus',
+        'audio/webm',
+        'audio/mp4',
+        'audio/mpeg',
+        'audio/ogg;codecs=opus',
+        'audio/ogg'
+    ];
+    for (let type of types) {
+        if (MediaRecorder.isTypeSupported(type)) {
+            return type;
+        }
+    }
+    return '';
+}
+
+async function iniciarGrabacion() {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mimeType = getSupportedMimeType();
+        const options = mimeType ? { mimeType } : {};
+        mediaRecorder = new MediaRecorder(stream, options);
+        audioChunks = [];
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) audioChunks.push(e.data);
+        };
+        mediaRecorder.onstop = procesarGrabacion;
+        mediaRecorder.start();
+        grabando = true;
+        document.getElementById('boton-grabar').style.display = 'none';
+        document.getElementById('boton-detener').style.display = 'block';
+    } catch (err) {
+        console.error('Error al acceder al micrófono:', err);
+        if (err.name === 'NotAllowedError') {
+            alert("Necesitamos permiso para usar el micrófono. Por favor, permite el acceso en tu navegador.");
+        } else {
+            alert("Hubo un problema al activar el micrófono. Asegúrate de estar en una página web (https) y no en un archivo local.");
+        }
+    }
+}
+
+function detenerGrabacion() {
+    if (!mediaRecorder) return;
+    mediaRecorder.stop();
+    grabando = false;
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+    }
+    document.getElementById('boton-detener').style.display = 'none';
+    document.getElementById('cargando').style.display = 'block';
+}
+
+function procesarGrabacion() {
+    setTimeout(() => {
+        document.getElementById('cargando').style.display = 'none';
+        if (audioChunks.length === 0) {
+            alert("No se grabó nada. Inténtalo de nuevo.");
+            document.getElementById('boton-grabar').style.display = 'block';
+            return;
+        }
+        const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType });
+        const url = URL.createObjectURL(blob);
+        document.getElementById('reproductor').src = url;
+        document.getElementById('zona-reproducir').style.display = 'block';
+        const indice = Math.floor(Math.random() * retroalimentaciones.length);
+        const res = retroalimentaciones[indice];
+        document.getElementById('texto-bien').textContent = res.bien;
+        document.getElementById('texto-mejora').textContent = res.mejora;
+        document.getElementById('texto-paso').textContent = res.paso;
+        document.getElementById('respuesta').style.display = 'block';
+        if (diaActual < 28) {
+            document.getElementById('boton-siguiente-dia').style.display = 'block';
+        } else {
+            document.getElementById('boton-siguiente-dia').innerText = '🎉 ¡Lo lograste! Fin del entrenamiento';
+            document.getElementById('boton-siguiente-dia').style.display = 'block';
+            document.getElementById('boton-siguiente-dia').disabled = true;
+        }
+    }, 1500);
+}
+
+// ==================================================
+// AVANCE Y REINICIO
+// ==================================================
+function siguienteDia() {
+    if (diaActual < 28) {
+        cargarDia(diaActual + 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function reiniciarTodo() {
+    if (confirm("¿Reiniciar todo el entrenamiento? Se perderá tu progreso guardado.")) {
+        localStorage.removeItem('klaria_dia');
+        diaActual = 1;
+        cargarDia(1);
+    }
+}
+</script>
+</body>
+</html>
